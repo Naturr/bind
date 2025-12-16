@@ -67,7 +67,7 @@ fun BindLogoScreen() {
 
 
                 Image(
-                    painter = painterResource(id = R.drawable.log), //
+                    painter = painterResource(id = R.drawable.log),
                     contentDescription = "Logo ",
                     modifier = Modifier
                         .size(160.dp)
