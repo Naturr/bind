@@ -1,7 +1,10 @@
 package com.naturel.bind
+
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -24,21 +27,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.naturel.bind.R
+import kotlinx.coroutines.delay
 
+// Définition des couleurs et polices globales
 val CreamBackground = Color(0xFFF3EFE3)
 val RopeColor = Color(0xFFC46C4F)
-val TextColor = Color(0xFF0D0D0D)
-val BindFont = FontFamily( Font(R.font.braah))
+val TextColor = Color(0xFF000000)
+val BindFont = FontFamily(Font(R.font.braah))
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            BindLogoScreen()
-    }}}
+            BindLogoScreen(
+                onAnimationEnd = {
+                    val intent = Intent(this, loginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            )
+        }
+    }
+}
+
+
 @Composable
-fun BindLogoScreen() {
+fun BindLogoScreen(onAnimationEnd: () -> Unit) { // Correction de la syntaxe du paramètre
+
     val textAnim = remember { Animatable(0f) }
+
+
     LaunchedEffect(Unit) {
         textAnim.animateTo(
             targetValue = 1f,
@@ -47,37 +66,36 @@ fun BindLogoScreen() {
                 delayMillis = 500,
                 easing = LinearOutSlowInEasing
             )
-        )}
+        )
 
+        delay(500)
+
+
+        onAnimationEnd()
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = CreamBackground
     ) {
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
 
-
                 Image(
                     painter = painterResource(id = R.drawable.log),
-                    contentDescription = "Logo ",
+                    contentDescription = "Logo",
                     modifier = Modifier
                         .size(160.dp)
-                        .offset(y =8.dp)
+                        .offset(y = 8.dp)
                 )
 
-
-
                 Spacer(modifier = Modifier.width(16.dp))
-
 
                 Text(
                     text = "Bind",
@@ -86,13 +104,14 @@ fun BindLogoScreen() {
                     fontWeight = FontWeight.Black,
                     fontFamily = BindFont,
                     letterSpacing = (-2).sp,
-               modifier = Modifier.drawWithContent {
-                    clipRect(
+                    modifier = Modifier.drawWithContent {
+                        clipRect(
                             left = 0f,
                             top = 0f,
                             right = size.width * textAnim.value,
                             bottom = size.height
-                        ){this@drawWithContent.drawContent()
+                        ) {
+                            this@drawWithContent.drawContent()
                         }
                     }
                 )
@@ -100,8 +119,10 @@ fun BindLogoScreen() {
         }
     }
 }
-        @Preview(showBackground = true)
+
+@Preview(showBackground = true)
 @Composable
 fun BindLogoPreview() {
-    BindLogoScreen()
+
+    BindLogoScreen(onAnimationEnd = {})
 }

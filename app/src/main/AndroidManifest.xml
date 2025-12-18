@@ -22,6 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".loginActivity"
+            android:exported="false"
+            android:label="Login"
+            android:theme="@style/Theme.Bind" />
     </application>
 
 </manifest>
